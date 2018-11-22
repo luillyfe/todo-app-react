@@ -37,36 +37,44 @@ class App extends Component {
     ]
   };
 
-  addNewTodo = name => {
-    const todo = {
+    addNewItem = item => {
+    let newItem = {
       id: generateId(),
-      name,
-      complete: false
+      name: item.name
     };
+    if (item.label === "todos") {
+      newItem = { ...newItem, complete: false };
+    }
     this.setState(prevState => ({
       ...prevState,
-      todos: prevState.todos.concat([todo])
+      [item.label]: prevState[item.label].concat([newItem])
     }));
   };
 
-  addNewGoal = name => {
-      const goal = {
-          id: generateId(),
-          name,
-      };
-      this.setState(prevState => ({
-          ...prevState,
-          goals: prevState.goals.concat([goal])
-      }));
+  removeItem = item => {
+    this.setState(prevState => ({
+      ...prevState,
+      [item.label]: prevState[item.label].filter(todo => todo.id !== item.id)
+    }));
   };
 
   render() {
     const { todos, goals } = this.state;
     return (
       <div className="container">
-        <List items={todos} title="Todos" addNewItem={this.addNewTodo} />
+        <List
+          items={todos}
+          title="todos"
+          addNewItem={this.addNewItem}
+          removeItem={this.removeItem}
+        />
         <hr />
-        <List items={goals} title="Goals" addNewItem={this.addNewGoal} />
+        <List
+          items={goals}
+          title="goals"
+          addNewItem={this.addNewItem}
+          removeItem={this.removeItem}
+        />
       </div>
     );
   }
