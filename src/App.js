@@ -37,13 +37,36 @@ class App extends Component {
     ]
   };
 
+  addNewTodo = name => {
+    const todo = {
+      id: generateId(),
+      name,
+      complete: false
+    };
+    this.setState(prevState => ({
+      ...prevState,
+      todos: prevState.todos.concat([todo])
+    }));
+  };
+
+  addNewGoal = name => {
+      const goal = {
+          id: generateId(),
+          name,
+      };
+      this.setState(prevState => ({
+          ...prevState,
+          goals: prevState.goals.concat([goal])
+      }));
+  };
+
   render() {
     const { todos, goals } = this.state;
     return (
       <div className="container">
-        <List items={todos} title="Todos" />
+        <List items={todos} title="Todos" addNewItem={this.addNewTodo} />
         <hr />
-        <List items={goals} title="Goals" />
+        <List items={goals} title="Goals" addNewItem={this.addNewGoal} />
       </div>
     );
   }
