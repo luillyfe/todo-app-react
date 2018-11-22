@@ -33,7 +33,7 @@ class List extends Component {
   };
 
   render() {
-    const { title, items } = this.props;
+    let { title, items } = this.props;
     const handleToggle = this.props.handleToggle ? this.props.handleToggle : () => null;
     const label = title.slice(0, title.length - 1);
     return (
@@ -66,7 +66,7 @@ class List extends Component {
             <input
               className="form-control mr-sm-2"
               type="search"
-              placeholder={label}
+              placeholder={this.formatTitle(label)}
               value={this.state.newItem}
               onChange={this.changeItemHandler}
               aria-label="Search"

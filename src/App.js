@@ -2,39 +2,17 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import List from "./List";
+import { createStore, app } from "./ReduxHandmade";
 
 const generateId = () =>
   Math.random().toString(36) + new Date().getSeconds().toString(36);
 
+const store = createStore(app);
+
 class App extends Component {
   state = {
-    goals: [
-      {
-        id: generateId(),
-        name: "Learn Redux"
-      },
-      {
-        id: generateId(),
-        name: "Read 50 books this year"
-      }
-    ],
-    todos: [
-      {
-        id: generateId(),
-        name: "Walk the dog",
-        complete: false
-      },
-      {
-        id: generateId(),
-        name: "Wash the car",
-        complete: false
-      },
-      {
-        id: generateId(),
-        name: "Go to the gym",
-        complete: true
-      }
-    ]
+    todos: [],
+    goals: []
   };
 
   addNewItem = item => {
@@ -68,23 +46,12 @@ class App extends Component {
   };
 
   render() {
-    const { todos, goals } = this.state;
+    const { todos, goals } = store.getState();
     return (
       <div className="container">
-        <List
-          items={todos}
-          title="todos"
-          addNewItem={this.addNewItem}
-          removeItem={this.removeItem}
-          handleToggle={this.handleToggle}
-        />
+        <List items={todos} title="todos" />
         <hr />
-        <List
-          items={goals}
-          title="goals"
-          addNewItem={this.addNewItem}
-          removeItem={this.removeItem}
-        />
+        <List items={goals} title="goals" />
       </div>
     );
   }
