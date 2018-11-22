@@ -2,3 +2,7 @@
     border-left: none;
     border-bottom: none;
 }
+
+.complete, .complete:hover {
+    text-decoration: line-through;
+}

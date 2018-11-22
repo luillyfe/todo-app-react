@@ -13,20 +13,28 @@ class List extends Component {
   addItemHandler = event => {
     event.persist();
     event.preventDefault();
-    this.props.addNewItem({name: this.state.newItem, label: this.props.title});
+    this.props.addNewItem({
+      name: this.state.newItem,
+      label: this.props.title
+    });
     this.setState({ newItem: "" });
   };
 
   handleRemoveItem = id => {
-    this.props.removeItem({id, label: this.props.title});
+    this.props.removeItem({ id, label: this.props.title });
   };
 
   formatTitle(title) {
-      return title.charAt(0).toUpperCase() + title.slice(1);
+    return title.charAt(0).toUpperCase() + title.slice(1);
+  };
+
+  handleToggle = id => {
+    this.props.handleToggle(id);
   };
 
   render() {
     const { title, items } = this.props;
+    const handleToggle = this.props.handleToggle ? this.props.handleToggle : () => null;
     const label = title.slice(0, title.length - 1);
     return (
       <div className="card">
@@ -34,7 +42,11 @@ class List extends Component {
         <div className="card-body">
           <ul className="list-group">
             {items.map(item => (
-              <li className="list-group-item" key={item.id}>
+              <li
+                className={`list-group-item ${item.complete ? "complete" : ""}`}
+                key={item.id}
+                onClick={() => handleToggle(item.id)}
+              >
                 {item.name}
                 <button
                   className="badge badge-danger badge-pill"

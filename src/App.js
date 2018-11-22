@@ -37,7 +37,7 @@ class App extends Component {
     ]
   };
 
-    addNewItem = item => {
+  addNewItem = item => {
     let newItem = {
       id: generateId(),
       name: item.name
@@ -58,6 +58,15 @@ class App extends Component {
     }));
   };
 
+  handleToggle = id => {
+    this.setState(prevState => ({
+      ...prevState,
+      todos: prevState.todos.map(
+        todo => (todo.id === id ? { ...todo, complete: !todo.complete } : todo)
+      )
+    }));
+  };
+
   render() {
     const { todos, goals } = this.state;
     return (
@@ -67,6 +76,7 @@ class App extends Component {
           title="todos"
           addNewItem={this.addNewItem}
           removeItem={this.removeItem}
+          handleToggle={this.handleToggle}
         />
         <hr />
         <List
