@@ -1,56 +1,6 @@
 const generateId = () =>
   Math.random().toString(36) + new Date().getSeconds().toString(36);
 
-export const createStore = reducer => {
-  let state = {
-      goals: [
-        {
-          id: generateId(),
-          name: "Learn Redux"
-        },
-        {
-          id: generateId(),
-          name: "Read 50 books this year"
-        }
-      ],
-      todos: [
-        {
-          id: generateId(),
-          name: "Walk the dog",
-          complete: false
-        },
-        {
-          id: generateId(),
-          name: "Wash the car",
-          complete: false
-        },
-        {
-          id: generateId(),
-          name: "Go to the gym",
-          complete: true
-        }
-      ]
-    },
-    listeners = [];
-
-  const getState = () => state;
-  const subscribe = listener => {
-    listeners.push(listener);
-    return () => listener.filter(l => l !== listener);
-  };
-
-  const dispatch = action => {
-    state = reducer(state, action);
-    listeners.forEach(listener => listener());
-  };
-
-  return {
-    getState,
-    subscribe,
-    dispatch
-  };
-};
-
 const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
 const TOGGLE_TODO = "TOGGLE_TODO";
@@ -88,7 +38,7 @@ export const removeGoalAction = id => ({
   id
 });
 
-const todos = (state = [], action) => {
+export const todos = (state = [], action) => {
   switch (action.type) {
     case ADD_TODO:
       return state.concat([action.todo]);
@@ -106,7 +56,7 @@ const todos = (state = [], action) => {
   }
 };
 
-const goals = (state = [], action) => {
+export const goals = (state = [], action) => {
   switch (action.type) {
     case ADD_GOAL:
       return state.concat([action.goal]);
@@ -116,8 +66,3 @@ const goals = (state = [], action) => {
       return state;
   }
 };
-
-export const app = (state = {}, action) => ({
-  todos: todos(state.todos, action),
-  goals: goals(state.goals, action)
-});

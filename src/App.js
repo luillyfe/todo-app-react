@@ -8,7 +8,7 @@ import {
   removeGoalAction,
   removeTodoAction,
   toggleTodoAction
-} from "./ReduxHandmade";
+} from "./Reducers";
 
 class App extends Component {
   componentDidMount() {
