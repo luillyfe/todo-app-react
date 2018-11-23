@@ -13,28 +13,33 @@ class List extends Component {
   addItemHandler = event => {
     event.persist();
     event.preventDefault();
-    this.props.addNewItem({
-      name: this.state.newItem,
-      label: this.props.title
-    });
+    let item = {
+      name: this.state.newItem
+    };
+    if (this.props.title === "todos") {
+      item = { ...item, complete: false };
+    }
+    this.props.store.dispatch(this.props.addItem(item));
     this.setState({ newItem: "" });
   };
 
   handleRemoveItem = id => {
-    this.props.removeItem({ id, label: this.props.title });
+    this.props.store.dispatch(this.props.removeItem(id));
   };
 
   formatTitle(title) {
     return title.charAt(0).toUpperCase() + title.slice(1);
-  };
+  }
 
   handleToggle = id => {
-    this.props.handleToggle(id);
+    this.props.store.dispatch(this.props.toggleItem(id));
   };
 
   render() {
     const { title, items } = this.props;
-    const handleToggle = this.props.handleToggle ? this.props.handleToggle : () => null;
+    const handleToggle = this.props.toggleItem
+      ? this.handleToggle
+      : () => null;
     const label = title.slice(0, title.length - 1);
     return (
       <div className="card">
@@ -66,7 +71,7 @@ class List extends Component {
             <input
               className="form-control mr-sm-2"
               type="search"
-              placeholder={label}
+              placeholder={this.formatTitle(label)}
               value={this.state.newItem}
               onChange={this.changeItemHandler}
               aria-label="Search"
