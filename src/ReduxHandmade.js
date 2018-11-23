@@ -1,5 +1,36 @@
-const createStore = reducer => {
-  let state,
+const generateId = () =>
+  Math.random().toString(36) + new Date().getSeconds().toString(36);
+
+export const createStore = reducer => {
+  let state = {
+      goals: [
+        {
+          id: generateId(),
+          name: "Learn Redux"
+        },
+        {
+          id: generateId(),
+          name: "Read 50 books this year"
+        }
+      ],
+      todos: [
+        {
+          id: generateId(),
+          name: "Walk the dog",
+          complete: false
+        },
+        {
+          id: generateId(),
+          name: "Wash the car",
+          complete: false
+        },
+        {
+          id: generateId(),
+          name: "Go to the gym",
+          complete: true
+        }
+      ]
+    },
     listeners = [];
 
   const getState = () => state;
@@ -26,29 +57,35 @@ const TOGGLE_TODO = "TOGGLE_TODO";
 const ADD_GOAL = "ADD_GOAL";
 const REMOVE_GOAL = "REMOVE_GOAL";
 
-const addTodoAction = todo => ({
+export const addTodoAction = todo => {
+  todo.id = generateId();
+  return {
     type: ADD_TODO,
     todo
+  };
+};
+
+export const removeTodoAction = id => ({
+  type: REMOVE_TODO,
+  id
 });
 
-const removeTodoAction = id => ({
-    type: REMOVE_TODO,
-    id
+export const toggleTodoAction = id => ({
+  type: TOGGLE_TODO,
+  id
 });
 
-const toggleTodoAction = id => ({
-    type: TOGGLE_TODO,
-    id
-});
-
-const addGoalAction = goal => ({
+export const addGoalAction = goal => {
+  goal.id = generateId();
+  return {
     type: ADD_GOAL,
     goal
-});
+  };
+};
 
-const removeGoalAction = id => ({
-    type: REMOVE_GOAL,
-    id
+export const removeGoalAction = id => ({
+  type: REMOVE_GOAL,
+  id
 });
 
 const todos = (state = [], action) => {
@@ -60,41 +97,27 @@ const todos = (state = [], action) => {
     case TOGGLE_TODO:
       return state.map(
         todo =>
-          todo.id === action.todo.id
+          todo.id === action.id
             ? Object.assign({}, todo, { complete: !todo.complete })
             : todo
       );
-      default:
-          return state;
+    default:
+      return state;
   }
 };
 
 const goals = (state = [], action) => {
-    switch (action.type) {
-        case ADD_GOAL:
-            return state.concat([action.goal]);
-        case REMOVE_GOAL:
-            return state.filter(goal => goal.id !== action.id);
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case ADD_GOAL:
+      return state.concat([action.goal]);
+    case REMOVE_GOAL:
+      return state.filter(goal => goal.id !== action.id);
+    default:
+      return state;
+  }
 };
 
-const app = (state = {}, action) => ({
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action),
+export const app = (state = {}, action) => ({
+  todos: todos(state.todos, action),
+  goals: goals(state.goals, action)
 });
-
-const store = createStore(app);
-
-store.subscribe(() => {
-  console.log(`The new state is, ${store.getState()}`);
-});
-
-const action = {
-  type: "ADD_TODO",
-  id: 0,
-  name: "Learn Redux",
-  complete: false
-};
-store.dispatch(action);
