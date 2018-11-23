@@ -57,27 +57,27 @@ const TOGGLE_TODO = "TOGGLE_TODO";
 const ADD_GOAL = "ADD_GOAL";
 const REMOVE_GOAL = "REMOVE_GOAL";
 
-const addTodoAction = todo => ({
+export const addTodoAction = todo => ({
   type: ADD_TODO,
   todo
 });
 
-const removeTodoAction = id => ({
+export const removeTodoAction = id => ({
   type: REMOVE_TODO,
   id
 });
 
-const toggleTodoAction = id => ({
+export const toggleTodoAction = id => ({
   type: TOGGLE_TODO,
   id
 });
 
-const addGoalAction = goal => ({
+export const addGoalAction = goal => ({
   type: ADD_GOAL,
   goal
 });
 
-const removeGoalAction = id => ({
+export const removeGoalAction = id => ({
   type: REMOVE_GOAL,
   id
 });
@@ -91,7 +91,7 @@ const todos = (state = [], action) => {
     case TOGGLE_TODO:
       return state.map(
         todo =>
-          todo.id === action.todo.id
+          todo.id === action.id
             ? Object.assign({}, todo, { complete: !todo.complete })
             : todo
       );
@@ -115,18 +115,3 @@ export const app = (state = {}, action) => ({
   todos: todos(state.todos, action),
   goals: goals(state.goals, action)
 });
-
-/*
-const store = createStore(app);
-
-store.subscribe(() => {
-  console.log(`The new state is, ${store.getState()}`);
-});
-
-const action = {
-  type: "ADD_TODO",
-  id: 0,
-  name: "Learn Redux",
-  complete: false
-};
-store.dispatch(action);*/

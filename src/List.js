@@ -10,26 +10,22 @@ class List extends Component {
     this.setState({ newItem: target.value });
   };
 
-  addItemHandler = event => {
+  addItem = event => {
     event.persist();
     event.preventDefault();
-    this.props.addNewItem({
+    this.props.addItem({
       name: this.state.newItem,
       label: this.props.title
     });
     this.setState({ newItem: "" });
   };
 
-  handleRemoveItem = id => {
+  removeItem = id => {
     this.props.removeItem({ id, label: this.props.title });
   };
 
   formatTitle(title) {
     return title.charAt(0).toUpperCase() + title.slice(1);
-  };
-
-  handleToggle = id => {
-    this.props.handleToggle(id);
   };
 
   render() {
@@ -50,7 +46,7 @@ class List extends Component {
                 {item.name}
                 <button
                   className="badge badge-danger badge-pill"
-                  onClick={() => this.handleRemoveItem(item.id)}
+                  onClick={() => this.removeItem(item.id)}
                 >
                   X
                 </button>
@@ -61,7 +57,7 @@ class List extends Component {
         <div className="card-footer">
           <form
             className="form-inline my-2 my-lg-0"
-            onSubmit={this.addItemHandler}
+            onSubmit={this.addItem}
           >
             <input
               className="form-control mr-sm-2"

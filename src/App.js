@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import List from "./List";
-import { createStore, app } from "./ReduxHandmade";
+import {
+  createStore,
+  app,
+  addTodoAction,
+  addGoalAction,
+  removeTodoAction,
+  removeGoalAction,
+  toggleTodoAction
+} from "./ReduxHandmade";
 
 const generateId = () =>
   Math.random().toString(36) + new Date().getSeconds().toString(36);
@@ -10,48 +18,54 @@ const generateId = () =>
 const store = createStore(app);
 
 class App extends Component {
-  state = {
-    todos: [],
-    goals: []
-  };
+  componentDidMount() {
+    store.subscribe(() => this.forceUpdate());
+  }
 
-  addNewItem = item => {
+  addItem = item => {
     let newItem = {
-      id: generateId(),
-      name: item.name
-    };
+        id: generateId(),
+        name: item.name
+      },
+      action;
     if (item.label === "todos") {
       newItem = { ...newItem, complete: false };
+      action = addTodoAction;
+    } else if (item.label === "goals") {
+      action = addGoalAction;
     }
-    this.setState(prevState => ({
-      ...prevState,
-      [item.label]: prevState[item.label].concat([newItem])
-    }));
+    store.dispatch(action(newItem));
   };
 
   removeItem = item => {
-    this.setState(prevState => ({
-      ...prevState,
-      [item.label]: prevState[item.label].filter(todo => todo.id !== item.id)
-    }));
+    const action = item.label === "todos" ? removeTodoAction : removeGoalAction;
+    store.dispatch(action(item.id));
   };
 
   handleToggle = id => {
-    this.setState(prevState => ({
-      ...prevState,
-      todos: prevState.todos.map(
-        todo => (todo.id === id ? { ...todo, complete: !todo.complete } : todo)
-      )
-    }));
+    store.dispatch(toggleTodoAction(id));
   };
 
   render() {
     const { todos, goals } = store.getState();
     return (
       <div className="container">
-        <List items={todos} title="todos" />
+        <List
+          items={todos}
+          store={store}
+          addItem={this.addItem}
+          removeItem={this.removeItem}
+          handleToggle={this.handleToggle}
+          title="todos"
+        />
         <hr />
-        <List items={goals} title="goals" />
+        <List
+          items={goals}
+          store={store}
+          addItem={this.addItem}
+          removeItem={this.removeItem}
+          title="goals"
+        />
       </div>
     );
   }
