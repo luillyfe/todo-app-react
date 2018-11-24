@@ -14,19 +14,41 @@ import { API } from "./Api";
 
 class Todos extends Component {
   addItem = name => {
-    const item = {
-      complete: false,
-      name
-    };
-    this.props.store.dispatch(addTodoAction(item));
+    API.saveTodo(name)
+      .then(todo => {
+        // TODO: Success notification.
+        this.props.store.dispatch(addTodoAction(name));
+      })
+      .catch(error => {
+        // TODO: fail notification.
+        alert(`Something was wrong, ${error}`);
+      });
   };
 
-  removeItem = ({ id }) => {
-    this.props.store.dispatch(removeTodoAction(id));
+  removeItem = todo => {
+    this.props.store.dispatch(removeTodoAction(todo.id));
+    API.deleteTodo(todo.id)
+      .then(() => {
+        // TODO: Success notification.
+      })
+      .catch(error => {
+        // TODO: fail notification.
+        alert(`Something was wrong, ${error}`);
+        this.props.store.dispatch(addTodoAction(todo));
+      });
   };
 
   toggleItem = id => {
     this.props.store.dispatch(toggleTodoAction(id));
+    API.saveTodoToggle(id)
+      .then(() => {
+        // TODO: Success notification.
+      })
+      .catch(error => {
+        // TODO: fail notification.
+        alert(`Something was wrong, ${error}`);
+        this.props.store.dispatch(toggleTodoAction(id));
+      });
   };
 
   render() {
@@ -51,8 +73,17 @@ class Goals extends Component {
     this.props.store.dispatch(addGoalAction(item));
   };
 
-  removeItem = ({ id }) => {
-    this.props.store.dispatch(removeGoalAction(id));
+  removeItem = goal => {
+    this.props.store.dispatch(removeGoalAction(goal.id));
+    API.deleteTodo(goal.id)
+      .then(() => {
+        // TODO: Success notification.
+      })
+      .catch(error => {
+        // TODO: fail notification.
+        alert(`Something was wrong, ${error}`);
+        this.props.store.dispatch(addGoalAction(goal));
+      });
   };
 
   render() {
