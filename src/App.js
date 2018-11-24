@@ -7,13 +7,23 @@ import {
   addGoalAction,
   removeGoalAction,
   removeTodoAction,
-  toggleTodoAction
+  toggleTodoAction,
+  receiveDataAction
 } from "./Reducers";
+import { API } from "./Api";
 
 class App extends Component {
   componentDidMount() {
-    this.props.store.subscribe(() => this.forceUpdate());
-  };
+    const { store } = this.props;
+    Promise.all([
+        API.fetchTodos(),
+        API.fetchGoals()]
+    ).then(([todos, goals]) => {
+        store.dispatch(receiveDataAction(todos, goals))
+    }) // .catch(console.log);
+
+    store.subscribe(() => this.forceUpdate());
+  }
 
   render() {
     const { todos, goals } = this.props.store.getState();

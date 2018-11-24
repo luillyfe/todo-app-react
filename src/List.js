@@ -13,7 +13,7 @@ class List extends Component {
   addItemHandler = event => {
     event.persist();
     event.preventDefault();
-      let item = {
+    let item = {
       name: this.state.newItem
     };
     if (this.props.title === "todos") {
@@ -40,9 +40,7 @@ class List extends Component {
     if (!items) {
       items = [];
     }
-    const handleToggle = this.props.toggleItem
-      ? this.handleToggle
-      : () => null;
+    const handleToggle = this.props.toggleItem ? this.handleToggle : () => null;
     const label = title.slice(0, title.length - 1);
     return (
       <div className="card">
