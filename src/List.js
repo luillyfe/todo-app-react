@@ -11,20 +11,13 @@ class List extends Component {
   };
 
   addItemHandler = event => {
-    event.persist();
     event.preventDefault();
-    let item = {
-      name: this.state.newItem
-    };
-    if (this.props.title === "todos") {
-      item = { ...item, complete: false };
-    }
-    this.props.store.dispatch(this.props.addItem(item));
+    this.props.addItem(this.state.newItem);
     this.setState({ newItem: "" });
   };
 
-  handleRemoveItem = id => {
-    this.props.store.dispatch(this.props.removeItem(id));
+  handleRemoveItem = item => {
+    this.props.removeItem(item);
   };
 
   formatTitle(title) {
@@ -32,7 +25,7 @@ class List extends Component {
   }
 
   handleToggle = id => {
-    this.props.store.dispatch(this.props.toggleItem(id));
+    this.props.toggleItem(id);
   };
 
   render() {
@@ -40,7 +33,6 @@ class List extends Component {
     if (!items) {
       items = [];
     }
-    const handleToggle = this.props.toggleItem ? this.handleToggle : () => null;
     const label = title.slice(0, title.length - 1);
     return (
       <div className="card">
@@ -51,12 +43,12 @@ class List extends Component {
               <li
                 className={`list-group-item ${item.complete ? "complete" : ""}`}
                 key={item.id}
-                onClick={() => handleToggle(item.id)}
+                onClick={() => this.handleToggle(item.id)}
               >
                 {item.name}
                 <button
                   className="badge badge-danger badge-pill"
-                  onClick={() => this.handleRemoveItem(item.id)}
+                  onClick={() => this.handleRemoveItem(item)}
                 >
                   X
                 </button>
