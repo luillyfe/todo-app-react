@@ -16,7 +16,8 @@ class List extends Component {
     this.setState({ newItem: "" });
   };
 
-  handleRemoveItem = item => {
+  handleRemoveItem = (event, item) => {
+    event.stopPropagation();
     this.props.removeItem(item);
   };
 
@@ -24,7 +25,8 @@ class List extends Component {
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
-  handleToggle = id => {
+  handleToggle = (event, id) => {
+    event.stopPropagation();
     this.props.toggleItem(id);
   };
 
@@ -43,12 +45,12 @@ class List extends Component {
               <li
                 className={`list-group-item ${item.complete ? "complete" : ""}`}
                 key={item.id}
-                onClick={() => this.handleToggle(item.id)}
+                onClick={e => this.handleToggle(e, item.id)}
               >
                 {item.name}
                 <button
                   className="badge badge-danger badge-pill"
-                  onClick={() => this.handleRemoveItem(item)}
+                  onClick={e => this.handleRemoveItem(e, item)}
                 >
                   X
                 </button>
