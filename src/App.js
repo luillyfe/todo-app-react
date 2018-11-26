@@ -4,14 +4,13 @@ import "./App.css";
 import List from "./List";
 import { Notification } from "./Notification";
 import {
-  addGoalAction,
-  addTodoAction,
-  receiveDataAction,
-  removeGoalAction,
-  removeTodoAction,
-  toggleTodoAction
+  handleAddGoalAction,
+  handleAddTodoAction,
+  handleReceiveDataAction,
+  handleRemoveGoalAction,
+  handleRemoveTodoAction,
+  handleToggleAction
 } from "./Reducers";
-import { API } from "./Api";
 
 class Todos extends Component {
   state = {
@@ -23,36 +22,13 @@ class Todos extends Component {
   };
 
   addItem = name => {
-    API.saveTodo(name)
-      .then(todo => {
-        this.sendNotification({
-          message: `${todo.name} was added with success!`
-        });
-        this.props.store.dispatch(addTodoAction(todo));
-      })
-      .catch(error => {
-        this.sendNotification({
-          type: "alert-danger",
-          message: `We were unable to add, ${name}`
-        });
-      });
+    this.props.store.dispatch(handleAddTodoAction(name, this.sendNotification));
   };
 
   removeItem = todo => {
-    this.props.store.dispatch(removeTodoAction(todo.id));
-    API.deleteTodo(todo.id)
-      .then(() => {
-        this.sendNotification({
-          message: `${todo.name} was removed with success!`
-        });
-      })
-      .catch(error => {
-        this.sendNotification({
-          message: `We were unable to remove, ${todo.name}!`,
-          type: "alert-danger"
-        });
-        this.props.store.dispatch(addTodoAction(todo));
-      });
+    this.props.store.dispatch(
+      handleRemoveTodoAction(todo, this.sendNotification)
+    );
   };
 
   sendNotification = ({
@@ -70,18 +46,7 @@ class Todos extends Component {
   };
 
   toggleItem = id => {
-    this.props.store.dispatch(toggleTodoAction(id));
-    API.saveTodoToggle(id)
-      .then(() => {
-        this.sendNotification({ message: "item updated!" });
-      })
-      .catch(error => {
-        this.sendNotification({
-          type: "alert-danger",
-          message: "we were unable to update this item"
-        });
-        this.props.store.dispatch(toggleTodoAction(id));
-      });
+    this.props.store.dispatch(handleToggleAction(id));
   };
 
   hideNotification = () => {
@@ -123,36 +88,13 @@ class Goals extends Component {
   };
 
   addItem = name => {
-    API.saveGoal(name)
-      .then(goal => {
-        this.sendNotification({
-          message: `${goal.name} was added with success!`
-        });
-        this.props.store.dispatch(addGoalAction(goal));
-      })
-      .catch(error => {
-        this.sendNotification({
-          type: "alert-danger",
-          message: `we were unable to add, ${name}`
-        });
-      });
+    this.props.store.dispatch(handleAddGoalAction(name, this.sendNotification));
   };
 
   removeItem = goal => {
-    this.props.store.dispatch(removeGoalAction(goal.id));
-    API.deleteTodo(goal.id)
-      .then(() => {
-        this.sendNotification({
-          message: `${goal.name} was removed with success!`
-        });
-      })
-      .catch(error => {
-        this.sendNotification({
-          type: "alert-danger",
-          message: `we were unable to removed, ${goal.name}`
-        });
-        this.props.store.dispatch(addGoalAction(goal));
-      });
+    this.props.store.dispatch(
+      handleRemoveGoalAction(goal, this.sendNotification)
+    );
   };
 
   sendNotification = ({
@@ -200,12 +142,7 @@ class Goals extends Component {
 class App extends Component {
   componentDidMount() {
     const { store } = this.props;
-    Promise.all([API.fetchTodos(), API.fetchGoals()])
-      .then(([todos, goals]) => {
-        store.dispatch(receiveDataAction(todos, goals));
-      })
-      .catch(console.log);
-
+    store.dispatch(handleReceiveDataAction());
     this.unsubscribeStore = store.subscribe(() => this.forceUpdate());
   }
 

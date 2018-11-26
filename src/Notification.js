@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./Notification.css";
 
 export class Notification extends Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate(nextProps) {
         if (nextProps.show !== this.props.show) {
             setTimeout(() => {
                 this.props.hideNotification();
