@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import List from "./List";
 import { Notification } from "./Notification";
-import { connect } from "./index";
+import { connect } from "react-redux";
 import {
   handleAddGoalAction,
   handleAddTodoAction,

@@ -1,4 +1,5 @@
-import React, { createContext, Component } from "react";
+import React from "react";
+import { connect, Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
@@ -20,52 +21,7 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 );
 
-export const Context = createContext({});
-
-class Provider extends Component {
-  render() {
-    return (
-      <Context.Provider value={this.props.store}>
-        {this.props.children}
-      </Context.Provider>
-    );
-  }
-}
-
-export function connect (mapStateToProps) {
-  return Component => {
-    class Receiver extends Component {
-      componentDidMount() {
-        const { subscribe } = this.props.store;
-        this.unsubscribe = subscribe(() => this.forceUpdate());
-      };
-
-      componentWillUnmount() {
-        this.unsubscribe();
-      };
-
-      render() {
-        const { dispatch, getState } = this.props.store;
-        const state = getState(mapStateToProps(getState()));
-        return <Component {...state} dispatch={dispatch} />;
-      }
-    }
-
-    class ConnectedComponent extends Component {
-      render() {
-        return (
-          <Context.Consumer>
-            {store => <Receiver store={store} />}
-          </Context.Consumer>
-        );
-      }
-    }
-
-    return ConnectedComponent;
-  };
-};
-
-const ConnectedApp = connect(state => ({ loading: state.loading}))(App);
+const ConnectedApp = connect(state => ({ loading: state.loading }))(App);
 
 ReactDOM.render(
   <Provider store={store}>
