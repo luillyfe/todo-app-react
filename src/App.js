@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import List from "./List";
 import { Notification } from "./Notification";
+import { connect } from "./index";
 import {
   handleAddGoalAction,
   handleAddTodoAction,
@@ -22,13 +23,11 @@ class Todos extends Component {
   };
 
   addItem = name => {
-    this.props.store.dispatch(handleAddTodoAction(name, this.sendNotification));
+    this.props.dispatch(handleAddTodoAction(name, this.sendNotification));
   };
 
   removeItem = todo => {
-    this.props.store.dispatch(
-      handleRemoveTodoAction(todo, this.sendNotification)
-    );
+    this.props.dispatch(handleRemoveTodoAction(todo, this.sendNotification));
   };
 
   sendNotification = ({
@@ -46,7 +45,7 @@ class Todos extends Component {
   };
 
   toggleItem = id => {
-    this.props.store.dispatch(handleToggleAction(id));
+    this.props.dispatch(handleToggleAction(id, this.sendNotification));
   };
 
   hideNotification = () => {
@@ -78,6 +77,8 @@ class Todos extends Component {
   }
 }
 
+const ConnectedTodos = connect(state => ({ todos: state.todos }))(Todos);
+
 class Goals extends Component {
   state = {
     notification: {
@@ -88,13 +89,11 @@ class Goals extends Component {
   };
 
   addItem = name => {
-    this.props.store.dispatch(handleAddGoalAction(name, this.sendNotification));
+    this.props.dispatch(handleAddGoalAction(name, this.sendNotification));
   };
 
   removeItem = goal => {
-    this.props.store.dispatch(
-      handleRemoveGoalAction(goal, this.sendNotification)
-    );
+    this.props.dispatch(handleRemoveGoalAction(goal, this.sendNotification));
   };
 
   sendNotification = ({
@@ -139,26 +138,22 @@ class Goals extends Component {
   }
 }
 
+const ConnectedGoals = connect(state => ({ goals: state.goals }))(Goals);
+
 class App extends Component {
   componentDidMount() {
-    const { store } = this.props;
-    store.dispatch(handleReceiveDataAction());
-    this.unsubscribeStore = store.subscribe(() => this.forceUpdate());
-  }
-
-  unsubscribeStore = () => null;
-
-  componentWillUnmount() {
-    this.unsubscribeStore();
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch(handleReceiveDataAction());
+    }
   }
 
   render() {
-    const { todos, goals } = this.props.store.getState();
     return (
       <div className="container">
-        <Todos todos={todos} store={this.props.store} />
+        <ConnectedTodos />
         <hr />
-        <Goals goals={goals} store={this.props.store} />
+        <ConnectedGoals />
       </div>
     );
   }
