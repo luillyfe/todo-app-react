@@ -1,40 +1,24 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import List from "./List";
-import {
-  addTodoAction,
-  addGoalAction,
-  removeGoalAction,
-  removeTodoAction,
-  toggleTodoAction
-} from "./ReduxHandmade";
+import {handleReceiveDataAction} from "./actions/Shared";
+import {ConnectedTodos} from "./Todos";
+import {ConnectedGoals} from "./Goals";
 
 class App extends Component {
   componentDidMount() {
-    this.props.store.subscribe(() => this.forceUpdate());
-  };
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch(handleReceiveDataAction());
+    }
+  }
 
   render() {
-    const { todos, goals } = this.props.store.getState();
     return (
-      <div className="container">
-        <List
-          title="todos"
-          items={todos}
-          store={this.props.store}
-          addItem={addTodoAction}
-          removeItem={removeTodoAction}
-          toggleItem={toggleTodoAction}
-        />
+      <div className="container mt-5">
+        <ConnectedTodos />
         <hr />
-        <List
-          title="goals"
-          items={goals}
-          store={this.props.store}
-          addItem={addGoalAction}
-          removeItem={removeGoalAction}
-        />
+        <ConnectedGoals />
       </div>
     );
   }

@@ -11,35 +11,30 @@ class List extends Component {
   };
 
   addItemHandler = event => {
-    event.persist();
     event.preventDefault();
-    let item = {
-      name: this.state.newItem
-    };
-    if (this.props.title === "todos") {
-      item = { ...item, complete: false };
-    }
-    this.props.store.dispatch(this.props.addItem(item));
+    this.props.addItem(this.state.newItem);
     this.setState({ newItem: "" });
   };
 
-  handleRemoveItem = id => {
-    this.props.store.dispatch(this.props.removeItem(id));
+  handleRemoveItem = (event, item) => {
+    event.stopPropagation();
+    this.props.removeItem(item);
   };
 
   formatTitle(title) {
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
-  handleToggle = id => {
-    this.props.store.dispatch(this.props.toggleItem(id));
+  handleToggle = (event, id) => {
+    event.stopPropagation();
+    this.props.toggleItem(id);
   };
 
   render() {
-    const { title, items } = this.props;
-    const handleToggle = this.props.toggleItem
-      ? this.handleToggle
-      : () => null;
+    let { title, items } = this.props;
+    if (!items) {
+      items = [];
+    }
     const label = title.slice(0, title.length - 1);
     return (
       <div className="card">
@@ -50,12 +45,12 @@ class List extends Component {
               <li
                 className={`list-group-item ${item.complete ? "complete" : ""}`}
                 key={item.id}
-                onClick={() => handleToggle(item.id)}
+                onClick={e => this.handleToggle(e, item.id)}
               >
                 {item.name}
                 <button
                   className="badge badge-danger badge-pill"
-                  onClick={() => this.handleRemoveItem(item.id)}
+                  onClick={e => this.handleRemoveItem(e, item)}
                 >
                   X
                 </button>
